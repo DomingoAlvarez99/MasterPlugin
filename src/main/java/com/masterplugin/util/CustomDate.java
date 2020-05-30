@@ -7,7 +7,8 @@ import java.time.LocalTime;
 public class CustomDate {
 
 	public static String getCurrentDate() {
-		return LocalDateTime.of(LocalDate.now(), LocalTime.now()).toString().substring(0,  LocalDateTime.of(LocalDate.now(), LocalTime.now()).toString().length()- 4);
+		return LocalDateTime.of(LocalDate.now(), LocalTime.now()).toString().substring(0,
+				LocalDateTime.of(LocalDate.now(), LocalTime.now()).toString().length() - 4);
 	}
-	
+
 }

@@ -27,6 +27,7 @@ com\masterplugin\Main$1$3.class
 com\masterplugin\util\ChangeColor.class
 com\masterplugin\event\OnCommandListener.class
 com\masterplugin\event\OnDeathListener$2.class
+com\masterplugin\event\OnJoinListener$7.class
 com\masterplugin\event\OnDeathListener.class
 com\masterplugin\util\Color.class
 com\masterplugin\event\OnJoinListener$4.class

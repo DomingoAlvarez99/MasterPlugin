@@ -1,4 +1,5 @@
 package com.masterplugin.model;
+
 import com.masterplugin.util.Color;
 
 import java.util.ArrayList;
@@ -6,27 +7,29 @@ import java.util.Arrays;
 import java.util.List;
 
 public class PlayerModel {
-	
-    private long id, timePlayed;
-    private String name, uuid, prefix, prefixColor, nameColor, nameFormat, prefixFormat, ip;
-    private String firstLogin, lastLogin;
-    private boolean init = true;
-    private List<String> oldColor, oldName;
-    private RankModel rank;
-    private List<WarpModel> warps;
-    private String[] colors = new String[]{Color.LIGHT_RED, Color.DARK_YELLOW, Color.LIGHT_YELLOW, Color.LIGHT_GREEN, Color.DARK_TURQUOISE, Color.LIGHT_TURQUOISE, Color.PURPLE, Color.MAGENTA};
-    
-    public PlayerModel() {
 
-    }
-    
-    public PlayerModel(long id) {
-    	this.id = id;
-    }
+	private long id, timePlayed;
+	private String name, uuid, prefix, prefixColor, nameColor, nameFormat, prefixFormat, ip;
+	private String firstLogin, lastLogin;
+	private boolean init = true;
+	private List<String> oldColor, oldName;
+	private RankModel rank;
+	private List<WarpModel> warps;
+	private boolean online;
+	private String[] colors = new String[] { Color.LIGHT_RED, Color.DARK_YELLOW, Color.LIGHT_YELLOW, Color.LIGHT_GREEN,
+			Color.DARK_TURQUOISE, Color.LIGHT_TURQUOISE, Color.PURPLE, Color.MAGENTA };
 
-    public PlayerModel(long id, long timePlayed, RankModel rank, String name, String uuid, String prefix,
+	public PlayerModel() {
+
+	}
+
+	public PlayerModel(long id) {
+		this.id = id;
+	}
+
+	public PlayerModel(long id, long timePlayed, RankModel rank, String name, String uuid, String prefix,
 			String prefixColor, String nameColor, String nameFormat, String prefixFormat, String ip, String firstLogin,
-			String lastLogin) {
+			String lastLogin, boolean online) {
 		this.id = id;
 		this.timePlayed = timePlayed;
 		this.rank = rank;
@@ -40,11 +43,12 @@ public class PlayerModel {
 		this.ip = ip;
 		this.firstLogin = firstLogin;
 		this.lastLogin = lastLogin;
+		this.online = online;
 	}
-    
-    public PlayerModel(long timePlayed, RankModel rank, String name, String uuid, String prefix,
-			String prefixColor, String nameColor, String nameFormat, String prefixFormat, String ip, String firstLogin,
-			String lastLogin) {
+
+	public PlayerModel(long timePlayed, RankModel rank, String name, String uuid, String prefix, String prefixColor,
+			String nameColor, String nameFormat, String prefixFormat, String ip, String firstLogin, String lastLogin,
+			boolean online) {
 		this.timePlayed = timePlayed;
 		this.rank = rank;
 		this.name = name;
@@ -57,27 +61,28 @@ public class PlayerModel {
 		this.ip = ip;
 		this.firstLogin = firstLogin;
 		this.lastLogin = lastLogin;
+		this.online = online;
 	}
 
 	public long getId() {
-        return id;
-    }
+		return id;
+	}
 
-    public RankModel getRank() {
-        return rank;
-    }
+	public RankModel getRank() {
+		return rank;
+	}
 
-    public PlayerModel setRank(RankModel rank) {
-        this.rank = rank;
-        return this;
-    }
+	public PlayerModel setRank(RankModel rank) {
+		this.rank = rank;
+		return this;
+	}
 
-    public PlayerModel setId(long id) {
-        this.id = id;
-        return this;
-    }
+	public PlayerModel setId(long id) {
+		this.id = id;
+		return this;
+	}
 
-    public long getTimePlayed() {
+	public long getTimePlayed() {
 		return timePlayed;
 	}
 
@@ -197,6 +202,14 @@ public class PlayerModel {
 		this.warps = warps;
 	}
 
+	public boolean isOnline() {
+		return online;
+	}
+
+	public void setOnline(boolean online) {
+		this.online = online;
+	}
+
 	@Override
 	public String toString() {
 		return "PlayerModel [id=" + id + ", timePlayed=" + timePlayed + ", name=" + name + ", uuid=" + uuid
@@ -207,68 +220,68 @@ public class PlayerModel {
 	}
 
 	public void writeDefaultColor(String name) {
-        oldName = new ArrayList<>();
-        oldColor = new ArrayList<>();
-        int caracteres = name.length() - colors.length;
-        int cont = 0;
-        for (int i = 0; i < name.length(); i++) {
-            if (i < colors.length) {
-                oldColor.add(colors[i]);
-                oldName.add(String.valueOf(name.charAt(i)));
-            }
-            if (caracteres > 0 && i >= colors.length) {
-                if (cont == colors.length) {
-                    cont = 0;
-                }
-                if (cont < colors.length) {
-                    oldColor.add(colors[cont]);
-                    oldName.add(String.valueOf(name.charAt(i)));
-                    cont++;
-                    caracteres--;
-                }
-            }
-        }
-    }
+		oldName = new ArrayList<>();
+		oldColor = new ArrayList<>();
+		int caracteres = name.length() - colors.length;
+		int cont = 0;
+		for (int i = 0; i < name.length(); i++) {
+			if (i < colors.length) {
+				oldColor.add(colors[i]);
+				oldName.add(String.valueOf(name.charAt(i)));
+			}
+			if (caracteres > 0 && i >= colors.length) {
+				if (cont == colors.length) {
+					cont = 0;
+				}
+				if (cont < colors.length) {
+					oldColor.add(colors[cont]);
+					oldName.add(String.valueOf(name.charAt(i)));
+					cont++;
+					caracteres--;
+				}
+			}
+		}
+	}
 
-    public String writeColor(String name) {
-        if (init) {
-            init = false;
-            writeDefaultColor(name);
-        }
-        String nombreARGB = "";
-        List<String> colorNuevo = new ArrayList<>();
-        for (int i = 0; i < oldColor.size(); i++) {
-            if (oldColor.get(i).equalsIgnoreCase(colors[0])) {
-                colorNuevo.add(colors[7]);
-            }
-            if (oldColor.get(i).equalsIgnoreCase(colors[1])) {
-                colorNuevo.add(colors[0]);
-            }
-            if (oldColor.get(i).equalsIgnoreCase(colors[2])) {
-                colorNuevo.add(colors[1]);
-            }
-            if (oldColor.get(i).equalsIgnoreCase(colors[3])) {
-                colorNuevo.add(colors[2]);
-            }
-            if (oldColor.get(i).equalsIgnoreCase(colors[4])) {
-                colorNuevo.add(colors[3]);
-            }
-            if (oldColor.get(i).equalsIgnoreCase(colors[5])) {
-                colorNuevo.add(colors[4]);
-            }
-            if (oldColor.get(i).equalsIgnoreCase(colors[6])) {
-                colorNuevo.add(colors[5]);
-            }
-            if (oldColor.get(i).equalsIgnoreCase(colors[7])) {
-                colorNuevo.add(colors[6]);
-            }
-        }
-        for (int i = 0; i < oldName.size(); i++) {
-            nombreARGB += colorNuevo.get(i) + oldName.get(i);
-        }
-        nombreARGB += "&f";
-        oldColor = colorNuevo;
-        return nombreARGB;
-    }
+	public String writeColor(String name) {
+		if (init) {
+			init = false;
+			writeDefaultColor(name);
+		}
+		String nombreARGB = "";
+		List<String> colorNuevo = new ArrayList<>();
+		for (int i = 0; i < oldColor.size(); i++) {
+			if (oldColor.get(i).equalsIgnoreCase(colors[0])) {
+				colorNuevo.add(colors[7]);
+			}
+			if (oldColor.get(i).equalsIgnoreCase(colors[1])) {
+				colorNuevo.add(colors[0]);
+			}
+			if (oldColor.get(i).equalsIgnoreCase(colors[2])) {
+				colorNuevo.add(colors[1]);
+			}
+			if (oldColor.get(i).equalsIgnoreCase(colors[3])) {
+				colorNuevo.add(colors[2]);
+			}
+			if (oldColor.get(i).equalsIgnoreCase(colors[4])) {
+				colorNuevo.add(colors[3]);
+			}
+			if (oldColor.get(i).equalsIgnoreCase(colors[5])) {
+				colorNuevo.add(colors[4]);
+			}
+			if (oldColor.get(i).equalsIgnoreCase(colors[6])) {
+				colorNuevo.add(colors[5]);
+			}
+			if (oldColor.get(i).equalsIgnoreCase(colors[7])) {
+				colorNuevo.add(colors[6]);
+			}
+		}
+		for (int i = 0; i < oldName.size(); i++) {
+			nombreARGB += colorNuevo.get(i) + oldName.get(i);
+		}
+		nombreARGB += "&f";
+		oldColor = colorNuevo;
+		return nombreARGB;
+	}
 
 }

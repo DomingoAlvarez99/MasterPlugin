@@ -39,9 +39,9 @@ public class OnJoinListener implements Listener {
 	}
 
 	private void createPlayer(final Player bPlayer, RankModel rank, final PlayerJoinEvent event) {
-		final PlayerModel player = new PlayerModel(0l, rank, bPlayer.getName(),
-				bPlayer.getUniqueId().toString(), DEFAULT_PREFIX, DEFAULT_PREFIX_COLOR, DEFAULT_NAME_COLOR, "", "",
-				bPlayer.getAddress().getAddress().getHostAddress(), CustomDate.getCurrentDate(), null);
+		final PlayerModel player = new PlayerModel(0l, rank, bPlayer.getName(), bPlayer.getUniqueId().toString(),
+				DEFAULT_PREFIX, DEFAULT_PREFIX_COLOR, DEFAULT_NAME_COLOR, "", "",
+				bPlayer.getAddress().getAddress().getHostAddress(), CustomDate.getCurrentDate(), null, true);
 		HttpClient.post("player", player, new Observer<String>() {
 			@Override
 			public void onSuccess(String data) {
@@ -55,14 +55,16 @@ public class OnJoinListener implements Listener {
 			}
 		});
 	}
-	
+
 	private void getPlayer(final Player bPlayer, final PlayerJoinEvent event) {
 		HttpClient.get("player/getByUuid/" + bPlayer.getUniqueId().toString(), new Observer<String>() {
 			@Override
 			public void onSuccess(String data) {
 				Bukkit.getConsoleSender().sendMessage("onPlayerJoin" + data);
 				final PlayerModel player = new Gson().fromJson(data, PlayerModel.class);
+				player.setOnline(true);
 				setPlayerListName(player, bPlayer, event);
+				updatePlayer(player);
 			}
 
 			@Override
@@ -72,13 +74,27 @@ public class OnJoinListener implements Listener {
 			}
 		});
 	}
-	
+
+	private void updatePlayer(final PlayerModel player) {
+		HttpClient.update("player/" + player.getId(), player, new Observer<String>() {
+			@Override
+			public void onSuccess(String data) {
+				Bukkit.getConsoleSender().sendMessage("onPlayerJoin" + data);
+			}
+
+			@Override
+			public void onFailure(Throwable throwable) {
+				Bukkit.getConsoleSender().sendMessage(throwable.getMessage());
+			}
+		});
+	}
+
 	private void getDefaultRank(final Player bPlayer, final PlayerJoinEvent event) {
 		HttpClient.get("rank/getByName/" + DEFAULT_RANK, new Observer<String>() {
 			@Override
 			public void onSuccess(String data) {
 				Bukkit.getConsoleSender().sendMessage(data);
-                final RankModel rank = new Gson().fromJson(data, RankModel.class);
+				final RankModel rank = new Gson().fromJson(data, RankModel.class);
 				Bukkit.getConsoleSender().sendMessage(data);
 				createPlayer(bPlayer, rank, event);
 			}
@@ -128,22 +144,23 @@ public class OnJoinListener implements Listener {
 			changeColor.start();
 		}
 		String name = player.getPrefixFormat() + player.getNameColor() + player.getName();
-		String prefix =  player.getPrefixFormat() + player.getPrefixColor() + player.getPrefix();
+		String prefix = player.getPrefixFormat() + player.getPrefixColor() + player.getPrefix();
 		bPlayer.setPlayerListName(ChatColor.translateAlternateColorCodes(KEY_ALT_COLOR, prefix + " " + name));
 		setWelcomeMessage(prefix + " " + name, event);
 	}
-	
+
 	public void setWelcomeMessage(String namePrefix, PlayerJoinEvent event) {
-		 int separators = namePrefix.length() / 5;
-         String separator = "-";
-         String nameSeparator = "";
-         for (int i = 0; i < namePrefix.length(); i++) {
-             nameSeparator += separator;
-         }
-         for (int i = 0; i < separators; i++) {
-             nameSeparator += separator;
-         }
-         event.setJoinMessage(ChatColor.translateAlternateColorCodes('&', "&4---------------------------" + nameSeparator + "\n" + WELCOME_MESSAGE + namePrefix + "\n" + "&4---------------------------" + nameSeparator));
+		int separators = namePrefix.length() / 5;
+		String separator = "-";
+		String nameSeparator = "";
+		for (int i = 0; i < namePrefix.length(); i++) {
+			nameSeparator += separator;
+		}
+		for (int i = 0; i < separators; i++) {
+			nameSeparator += separator;
+		}
+		event.setJoinMessage(ChatColor.translateAlternateColorCodes('&', "&4---------------------------" + nameSeparator
+				+ "\n" + WELCOME_MESSAGE + namePrefix + "\n" + "&4---------------------------" + nameSeparator));
 	}
 
 }
